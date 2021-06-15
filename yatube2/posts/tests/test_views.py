@@ -10,6 +10,7 @@ from posts.models import Post, Group, Comment, Follow
 
 User = get_user_model()
 
+
 class PostsPagesTests(TestCase):
     uploaded = None
 
@@ -117,7 +118,6 @@ class PostsPagesTests(TestCase):
         response_page_not_found = self.guest_client.get('/tests_url/')
         self.assertEqual(response_page_not_found.status_code, 404)
 
-
     def test_cache_index(self):
         """Проверяем создается ли кеш главной страницы"""
         client = Client()
@@ -125,14 +125,13 @@ class PostsPagesTests(TestCase):
                                         password='novikov')
         client.force_login(user)
         cache.clear()
-        request = client.post(reverse('new_post'),
-                              {'author': user,
-                               'text': 'test_cache'},
-                              follow=True)
-        post = Post.objects.get(author=user)
+        client.post(reverse('new_post'), {'author': user,
+                                          'text': 'test_cache'}, follow=True)
+        Post.objects.get(author=user)
         x = cache.get('index_page')
         x = cache._cache.keys()
         self.assertIn('index_page', f'{x}')
+
 
 class PaginatorViewsTest(TestCase):
     @classmethod
