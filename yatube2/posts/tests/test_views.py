@@ -5,7 +5,7 @@ from django import forms
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.cache import cache
 
-from posts.models import Post, Group, Comment, Follow
+from posts.models import Post, Group, Comment
 
 
 User = get_user_model()
@@ -146,10 +146,12 @@ class PaginatorViewsTest(TestCase):
                 author=cls.user)
 
     def test_first_page_contains_ten_records(self):
+        """Работа пагинатора на первой странице с 10-тью записями"""
         response = self.authorized_client.get(reverse('index'))
         self.assertEqual(len(response.context.get('page').object_list), 10)
 
-    def test_second_page_contains_three_records(self):
+    def test_second_page_contains_five_records(self):
+        """Работа пагинатора на второй странице с 5-тью записями"""
         response = self.authorized_client.get(
             reverse('index') + '?page=2'
         )
@@ -165,6 +167,7 @@ class TestComment(TestCase):
         cls.post = Post.objects.create(text='Просто текст', author=cls.user)
 
     def test_authorized_user_comments_posts(self):
+        """Проверка на добавление комментария авторизованным юзером."""
         self.client.force_login(TestComment.user)
 
         self.client.post(
@@ -182,6 +185,7 @@ class TestComment(TestCase):
                 post_id=TestComment.post.id).exists())
 
     def test_comment_notauthorized(self):
+        """Проверка на добавление комментария не авторизованным юзером."""
         self.client.post(
             reverse(
                 'add_comment',
