@@ -1,0 +1,18 @@
+{% extends 'include/base.html' %}
+{% block title %}Профиль пользователя {{ profile.get_full_name }}{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+    <main role='main' class='container'>
+        <div class='row'>
+            <div class='col-md-3 mb-3 mt-1'>
+                {% include 'posts/include/author_profile.html' %}
+            </div>
+
+            <div class='col-md-9'>
+                {% include 'posts/include/post_item.html' %}
+                {% include 'posts/include/comments.html' with post=post  %}
+            </div>
+
+        </div>
+    </main>
+{% endblock %}
