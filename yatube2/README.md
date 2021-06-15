@@ -1,2 +1,0 @@
-# yatube2
- yatube
