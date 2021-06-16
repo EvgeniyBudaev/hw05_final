@@ -40,10 +40,8 @@ class PostFormTests(TestCase):
         )
 
     def setUp(self):
-        # Создание авторизованного пользователя.
         self.authorized_client = Client()
         self.authorized_client.force_login(self.author)
-        # Создаем неавторизованный клиент
         self.guest_client = Client()
         self.uploaded = SimpleUploadedFile(
             name='small.gif',
@@ -54,7 +52,6 @@ class PostFormTests(TestCase):
     def test_post_form_create_new_post(self):
         """Форма создаёт пост в базе и перенаправляет пользователя
         на главную страницу."""
-        # Подсчитаем количество записей в Post
         posts_count = Post.objects.count()
         form_data = {
             'text': 'Тестовый пост из формы',
@@ -62,26 +59,20 @@ class PostFormTests(TestCase):
             'image': self.uploaded
         }
         new_text_form = 'Тестовый пост из формы'
-        # Отправляем POST-запрос
         response = self.authorized_client.post(
             reverse('new_post'),
             data=form_data,
             follow=True
         )
-        # Проверим, что ничего не упало и страница отдаёт код 200
         self.assertEqual(response.status_code, 200)
-        # Проверяем, увеличилось ли число постов
         self.assertEqual(Post.objects.count(), posts_count + 1)
-        # Проверяем, что создалась запись с нашим текстом
         self.assertTrue(Post.objects.filter(
             text=new_text_form,
             group=self.group.id,
             author=self.author
         ).exists())
-        # Проверяем текст у добавленного поста
         last_object = Post.objects.filter().order_by('-id')[0]
         self.assertEqual(last_object.text, form_data['text'])
-        # Проверяем, сработал ли редирект на главную страницу
         self.assertRedirects(response, reverse('index'))
 
     def test_edit_post_in_form(self):
@@ -123,8 +114,6 @@ class PostFormTests(TestCase):
             data=form_data,
             follow=True
         )
-        # Убедимся, что запись в базе данных не создалась:
-        # сравним количество записей в Post до и после отправки формы
         self.assertEqual(Post.objects.count(), posts_count)
         self.assertEqual(response.status_code, 200)
 

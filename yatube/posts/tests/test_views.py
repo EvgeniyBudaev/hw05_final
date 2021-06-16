@@ -64,7 +64,6 @@ class PostsPagesTests(TestCase):
             reverse('group_posts', kwargs={'slug': 'test-slug'})
         ]
 
-    # Проверяем используемые шаблоны
     def test_pages_use_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
         templates_page_names = {
@@ -78,7 +77,6 @@ class PostsPagesTests(TestCase):
                 response = self.authorized_client.get(reverse_name)
                 self.assertTemplateUsed(response, template)
 
-    # Проверка словаря контекста главной страницы
     def test_home_page_show_correct_context(self):
         """Шаблон index сформирован с правильным контекстом."""
         cache.clear()
@@ -86,8 +84,6 @@ class PostsPagesTests(TestCase):
         self.assertEqual(response.context.get('page').object_list[-1],
                          self.post)
 
-    # Проверка словаря context страницы group
-    # и созданный пост в этой группе
     def test_group_page_show_correct_context(self):
         """Шаблон group сформирован с правильным контекстом."""
         response = self.guest_client.get(reverse(
@@ -97,7 +93,6 @@ class PostsPagesTests(TestCase):
         self.assertEqual(response.context.get('page').object_list[-1],
                          self.post2)
 
-    # Проверка словаря context и страницы создания поста
     def test_new_page_shows_context(self):
         """Шаблон new_post сформирован с правильным контекстом."""
         response = self.authorized_client.get(reverse('new_post'))
@@ -106,7 +101,6 @@ class PostsPagesTests(TestCase):
                 form_field = response.context['form'].fields[value]
                 self.assertIsInstance(form_field, expected)
 
-    # Проверка на отсутствие на страницы group другой группы созданного поста
     def test_group_pages_not_show_new_post(self):
         """Шаблон group не содержит искомый контекст."""
         response = self.authorized_client.get(
@@ -199,6 +193,7 @@ class TestComment(TestCase):
             Comment.objects.filter(
                 text='Комментарий неавторизированного пользователя',
                 post_id=TestComment.post.id).exists())
+
 
 class TestFollow(TestCase):
     @classmethod
