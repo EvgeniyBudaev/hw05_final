@@ -60,6 +60,8 @@ pytest --version
 pip install Pillow
 pip install sorl-thumbnail
 
+# Debug
+pip install django-debug-toolbar
 
 GIT
 # Добавить папку в игнор-лист гита
